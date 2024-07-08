@@ -512,3 +512,135 @@ final String str2 = "ing";
 String c = "str" + "ing";// 常量池中的对象
 String d = str1 + str2; // 常量池中的对象
 System.out.println(c == d);// true
+
+
+
+# Java基础（下）
+
+
+
+## Excepetion和Error有什么区别？
+
+首先，他们都有一个共同的父类Throwable,
+
+Exception是程序本身可以处理的异常，用catch捕获，Exception分为checked exception（受检异常，必须处理的异常）和unchecked exception （不受检异常，程序可以不处理的异常）
+
+Error是程序无法处理的异常，不能用catch捕获，比如Java虚拟机运行时异常，类定义错误等异常发生后，Java虚拟机一般会选择线程终止
+
+
+
+## Checked Exception和UnChecked Exception有什么区别？
+
+Checked Exception是受检异常，程序必须处理的异常，用catch捕获或throws 关键字抛出，不然无法通过编译，除了RuntimeException及其子类外，其它异常都是受检异常，比如IO相关的异常，SQLException等
+
+UnChecked Exception是不受检异常，程序可以不处理的异常，可以通过编译。RuntimeException及其子类就是不受检异常，常见的有空指针异常，非法参数异常
+
+
+
+常见的有（建议记下来，日常开发中会经常用到）：
+
+`NullPointerException`(空指针错误)
+
+`IllegalArgumentException`(参数错误比如方法入参类型错误)
+
+`NumberFormatException`（字符串转换为数字格式错误，`IllegalArgumentException`的子类）
+
+`ArrayIndexOutOfBoundsException`（数组越界错误）
+
+`ClassCastException`（类型转换错误）
+
+`ArithmeticException`（算术错误）
+
+`SecurityException` （安全错误比如权限不够）
+
+`UnsupportedOperationException`(不支持的操作错误比如重复创建同一用户)
+
+------
+
+著作权归JavaGuide(javaguide.cn)所有 基于MIT协议 原文链接：https://javaguide.cn/java/basis/java-basic-questions-03.html
+
+
+
+## Throwable类的常用方法是什么？
+
+getMessage（）：打印异常信息的简要描述
+
+toString(): 			   打印异常信息的详细信息
+
+getLocalizeMessage(): 返回异常对象的本地化信息，如果Throwable的子类没有重写这个方法，他打印的和getMessage()方法一样
+
+pringStackTrace(): 打印Throwable对象封装的异常信息
+
+
+
+## try-catch-finally如何使用？
+
+try:用于捕获异常，其后可以接0或多个catch，如果后面接0个catch，则必须使用finally
+
+catch：用于处理捕获的异常
+
+finally:无论是否捕获或处理异常，finally语句块都会执行，如果try或catch里面有return，则finally语句块会在方法返回之前执行。
+
+注意不要在finally里面写return，如果try和finally里面都有return的话，try里面的return会被忽略  
+
+
+
+## finally所在的代码块一定会被执行吗？
+
+不一定，如果在执行finally之前Java虚拟机终止，finally代码块就不会被执行，或者程序所在的线程死亡，关闭CPU也会让代码块不被执行
+
+
+
+## 如何用try-with-resource代替try-catch-finally?
+
+try-with-resource适用于实现AutoCloseable或Closeable的对象
+
+面对必须要关闭的资源的时候，优先用try-with-resource,catch和finally代码块会在资源被关闭后执行
+
+
+
+## 异常使用有哪些需要注意的地方？
+
+1：不要把异常对象定义成静态变量，因为这样会导致异常栈信息错乱，手动抛出异常用new 异常对象抛出
+
+2：抛出的异常信息一定要有意义
+
+3：抛出具体的异常，比如字符串转数字类型格式错误异常，你不要抛出非法参数异常
+
+4：避免重复记录日志，在catch捕获的时候，已经记录的异常信息等，不要在业务抛出后，重复记录这个异常记录信息，这样不利于查找问题，也会让日志文件膨胀
+
+
+
+## 什么是泛型？泛型有什么作用？
+
+泛型是JDK5引入的一个特性，它可以在编译期间检查类型，减少数据类型转换，使用泛型参数，提高了代码的可读性和稳定性
+
+
+
+## 泛型方法的使用方式有哪几种？
+
+泛型类，泛型接口，泛型方法
+
+
+
+## 项目中哪里使用了泛型？
+
+1：自定义接口结果返回类CommomResult<T>
+
+2：Excel处理类ExcelUtils<T>可以动态处理excel导出的数据格式
+
+3：构建结果工具类，比如Collections类的sort方法
+
+
+
+## 什么是反射？
+
+反射赋予了我们在运行时分析类和执行类中方法的能力，它可以获取任意一个类的属性和方法，并且调用这些属性和方法
+
+
+
+## 反射的优缺点？
+
+优点：反射让我们的代码更加灵活，为框架开箱即用的功能提供了便利
+
+缺点：带来了安全问题，它可以无视泛型参数安全检查，然后它的性能会稍差，不过对框架影响不大
